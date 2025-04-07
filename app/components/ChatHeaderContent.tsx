@@ -12,7 +12,7 @@ function ChatHeaderContent({ onOpenSidebar, title }: ChatHeaderContentProps) {
         <button
           type="button"
           onClick={onOpenSidebar}
-          className="text-light-primary dark:text-dark-primary hover:text-accent-02-light dark:hover:text-accent-02-dark mr-3 px-2 py-4"
+          className="text-light-secondary hover:text-light-primary dark:text-dark-secondary dark:hover:text-dark-primary mr-3 p-2" // Adjusted padding
           aria-label="Open chat history"
         >
           <svg
@@ -32,21 +32,23 @@ function ChatHeaderContent({ onOpenSidebar, title }: ChatHeaderContentProps) {
           </svg>
         </button>
       </div>
-      <div className="text-light-primary dark:text-dark-primary text-center text-sm">{title}</div>
+      {/* Title */}
+      <div className="text-light-primary dark:text-dark-primary text-center text-sm font-medium truncate">{title}</div>
+      {/* New Chat Button */}
       <div className="relative px-2">
         <button
           type="button"
           onClick={() => {
             document.location = '/';
           }}
-          className="peer bg-accent-02-light dark:bg-accent-02-dark hover:bg-accent-03-light dark:hover:bg-accent-03-dark flex cursor-pointer items-center justify-center rounded-full p-2.5 text-white transition-colors"
+          className="peer flex cursor-pointer items-center justify-center rounded-full bg-accent-02-light p-2 text-white transition-colors hover:bg-accent-03-light dark:bg-accent-02-dark dark:hover:bg-accent-03-dark subtle-shadow"
           aria-label="New Chat"
           title="New Chat"
         >
           <span className="sr-only">New Chat</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
+            className="h-5 w-5" // Icon size
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -60,7 +62,8 @@ function ChatHeaderContent({ onOpenSidebar, title }: ChatHeaderContentProps) {
             />
           </svg>
         </button>
-        <span className="pointer-events-none absolute top-full right-0 mt-1 rounded bg-gray-800 px-2 py-1 text-sm whitespace-nowrap text-white opacity-0 transition-opacity peer-hover:opacity-100">
+        {/* Tooltip */}
+        <span className="pointer-events-none absolute top-full right-0 mt-1.5 rounded bg-soft-charcoal px-2 py-1 text-xs whitespace-nowrap text-off-white opacity-0 transition-opacity peer-hover:opacity-100 dark:bg-dark-surface dark:text-dark-text">
           New Chat
         </span>
       </div>

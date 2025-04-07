@@ -106,26 +106,33 @@ export default function CookieBanner() {
       declineButtonText="Decline"
       cookieName="cookieConsent"
       style={{
-        background: isDarkMode ? '#1a1a1a' : '#ffffff',
-        color: '#808080',
+        background: isDarkMode ? 'var(--color-dark-surface)' : 'var(--color-light-background-01)',
+        color: isDarkMode ? 'var(--color-dark-secondary)' : 'var(--color-light-secondary)',
         boxShadow: isDarkMode
-          ? '0 -1px 10px rgba(255, 255, 255, 0.1)'
-          : '0 -1px 10px rgba(0, 0, 0, 0.1)',
+          ? '0 -1px 5px rgba(168, 133, 255, 0.1)' // Subtle lavender glow shadow dark
+          : '0 -1px 5px rgba(0, 0, 0, 0.05)', // Subtle shadow light
+        borderTop: isDarkMode
+          ? '1px solid var(--color-dark-decorative-00)'
+          : '1px solid var(--color-light-decorative-00)',
+        fontSize: '13px',
+        padding: '10px 15px',
       }}
       buttonStyle={{
-        color: isDarkMode ? '#ffffff' : '#000000',
-        backgroundColor: isDarkMode ? '#333333' : '#e0e0e0',
-        fontSize: '13px',
-        borderRadius: '4px',
-        padding: '8px 16px',
+        color: isDarkMode ? 'var(--color-dark-primary)' : 'var(--color-light-primary)',
+        backgroundColor: isDarkMode ? 'var(--color-accent-02-dark)' : 'var(--color-accent-02-light)',
+        fontSize: '12px',
+        borderRadius: '6px', // Consistent rounding
+        padding: '6px 12px',
+        fontWeight: 500,
       }}
       declineButtonStyle={{
-        color: '#808080',
+        color: isDarkMode ? 'var(--color-dark-secondary)' : 'var(--color-light-secondary)',
         backgroundColor: 'transparent',
-        fontSize: '13px',
-        border: '1px solid #808080',
-        borderRadius: '4px',
-        padding: '7px 15px',
+        fontSize: '12px',
+        border: `1px solid ${isDarkMode ? 'var(--color-dark-decorative-01)' : 'var(--color-light-decorative-01)'}`,
+        borderRadius: '6px',
+        padding: '5px 11px', // Adjusted for border
+        marginLeft: '10px',
       }}
       expires={365}
       enableDeclineButton

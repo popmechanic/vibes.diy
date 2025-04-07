@@ -70,7 +70,7 @@ function QuickSuggestions({ onSelectSuggestion }: QuickSuggestionsProps) {
             key={index}
             type="button"
             onClick={() => onSelectSuggestion(suggestion.text)}
-            className="bg-light-background-01 dark:bg-dark-background-01 text-light-primary dark:text-dark-primary hover:bg-light-decorative-01 dark:hover:bg-dark-decorative-01 cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+            className="bg-light-background-01 dark:bg-dark-background-01 text-light-secondary dark:text-dark-secondary hover:bg-light-decorative-01 hover:text-light-primary dark:hover:bg-dark-decorative-01 dark:hover:text-dark-primary cursor-pointer rounded-md border border-light-decorative-00 dark:border-dark-decorative-00 px-3 py-1.5 text-xs font-medium transition-colors subtle-shadow hover:shadow-md"
           >
             {suggestion.label}
           </button>

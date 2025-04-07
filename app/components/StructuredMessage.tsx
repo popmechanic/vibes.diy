@@ -137,41 +137,41 @@ const CodeSegment = ({
       data-code-segment={index}
       style={{
         position: 'sticky',
-        top: '8px',
+        top: '8px', // Adjust as needed for spacing
         zIndex: 10,
       }}
-      className={`relative my-4 cursor-pointer rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm transition-all hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 ${
-        isSticky ? 'sticky-active' : ''
+      className={`relative my-4 cursor-pointer rounded-lg border border-light-decorative-00 bg-light-background-01 p-3 transition-all duration-300 ease-in-out hover:border-accent-01-light dark:border-dark-decorative-00 dark:bg-dark-background-01 dark:hover:border-accent-01-dark ${
+        isSticky ? 'sticky-active subtle-shadow' : 'subtle-shadow' // Add shadow always, enhance on sticky
       }`}
       onClick={handleCodeClick}
     >
+      {/* Status Indicator Dot */}
       <div
-        className={`absolute -top-1 left-1 text-lg ${
+        className={`absolute -top-1.5 -left-1.5 h-3 w-3 rounded-full border-2 ${
           !codeReady
-            ? 'text-orange-500 dark:text-orange-400'
+            ? 'border-orange-400 bg-orange-200 dark:border-orange-500 dark:bg-orange-300' // Processing
             : isSelected
-              ? 'text-green-500 dark:text-green-400'
-              : 'text-gray-400 dark:text-gray-600'
+              ? 'border-green-500 bg-green-300 dark:border-green-400 dark:bg-green-200 animate-pulse' // Selected (pulse optional)
+              : 'border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-500' // Default
         }`}
-      >
-        •
-      </div>
-      <div className="flex items-center justify-between rounded p-2">
-        <span className="font-mono text-sm text-gray-500 dark:text-gray-400">
+      ></div>
+      {/* Header: Lines count and Copy button */}
+      <div className="mb-2 flex items-center justify-between rounded px-1 py-0">
+        <span className="font-mono text-xs text-light-secondary dark:text-dark-secondary">
           {`${codeLines} line${codeLines !== 1 ? 's' : ''}`}
         </span>
         <button
           onClick={(e: React.MouseEvent) => {
             e.stopPropagation(); // Prevent triggering the parent's onClick
-            // If shift key is pressed, copy the raw message text instead of just the code
             const textToCopy = e.shiftKey && rawText ? rawText : content;
             navigator.clipboard.writeText(textToCopy);
+            // Optional: Add visual feedback on copy
           }}
-          className="rounded bg-gray-200 px-2 py-1 text-sm text-gray-500 transition-colors hover:bg-gray-300 hover:text-gray-600 active:bg-orange-400 active:text-orange-800 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:active:bg-orange-600 dark:active:text-orange-200"
+          className="rounded-md bg-light-background-02 px-2 py-1 text-xs text-light-secondary transition-colors hover:bg-light-decorative-01 active:bg-pastel-pink dark:bg-dark-background-02 dark:text-dark-secondary dark:hover:bg-dark-decorative-01 dark:active:bg-accent-02-dark"
+          title="Copy code (Shift+Click to copy full message)"
         >
-          <code className="font-mono">
-            <span className="mr-3">App.jsx</span>
-
+          <code className="font-mono flex items-center">
+            <span className="mr-1.5">App.jsx</span>
             <svg
               aria-hidden="true"
               height="16"
@@ -193,14 +193,29 @@ const CodeSegment = ({
         </button>
       </div>
 
-      {/* Code preview with height transition instead of conditional rendering */}
+      {/* Code preview - collapses when sticky */}
       <div
-        className={`overflow-hidden rounded bg-gray-100 font-mono text-sm shadow-inner transition-all dark:bg-gray-800 ${
-          isSticky ? 'm-0 h-0 max-h-0 min-h-0 border-0 p-0 opacity-0' : 'mt-2 max-h-24 p-2'
+        className={`overflow-hidden rounded bg-light-background-00 font-mono text-xs shadow-inner transition-all duration-300 ease-in-out dark:bg-dark-background-00 ${
+          isSticky
+            ? 'm-0 max-h-0 min-h-0 border-0 p-0 opacity-0'
+            : 'mt-2 max-h-20 p-2 border border-light-decorative-00 dark:border-dark-decorative-00' // Added border
         }`}
       >
         {content
           .split('\n')
+          .slice(0, 3) // Show first 3 lines
+          .map((line, i) => (
+            <div key={i} className="truncate text-light-secondary dark:text-dark-secondary">
+              {line || '\u00A0'} {/* Use non-breaking space for empty lines */}
+            </div>
+          ))}
+        {content.split('\n').length > 3 && (
+          <div className="text-light-secondary/70 dark:text-dark-secondary/70">...</div>
+        )}
+      </div>
+    </div>
+  );
+};
           .slice(0, 3)
           .map((line, i) => (
             <div key={i} className="truncate text-gray-800 dark:text-gray-300">
@@ -279,11 +294,12 @@ const StructuredMessage = ({
   }, []);
 
   return (
-    <div className="structured-message" style={{ overflow: 'visible', position: 'relative' }}>
-      {!hasContent ? (
-        // Show placeholder if there are no segments with content
-        <div className="prose prose-sm dark:prose-invert prose-ul:pl-5 prose-ul:list-disc prose-ol:pl-5 prose-ol:list-decimal prose-li:my-0 max-w-none">
-          <p>Processing response...</p>
+    <div className="structured-message text-sm" style={{ overflow: 'visible', position: 'relative' }}>
+      {!hasContent && !isStreaming ? ( // Show placeholder only if not streaming and no content
+        <div className="ai-markdown">
+          <p className="italic text-light-secondary dark:text-dark-secondary">
+            Waiting for response...
+          </p>
         </div>
       ) : (
         // Map and render each segment that has content
@@ -293,8 +309,9 @@ const StructuredMessage = ({
           )
           .map((segment, index) => {
             if (segment.type === 'markdown') {
+              // Apply ai-markdown class directly for consistent styling
               return (
-                <div key={`markdown-${index}`} className="ai-markdown prose">
+                <div key={`markdown-${index}`} className="ai-markdown">
                   <ReactMarkdown>{segment.content || ''}</ReactMarkdown>
                 </div>
               );
@@ -318,9 +335,11 @@ const StructuredMessage = ({
           })
       )}
 
-      {/* Show streaming indicator only when streaming AND we already have content */}
-      {isStreaming && hasContent && (
-        <span className="bg-light-primary dark:bg-dark-primary ml-1 inline-block h-4 w-2 animate-pulse" />
+      {/* Show streaming indicator only when streaming */}
+      {isStreaming && (
+         // Use a more subtle text-based indicator or keep the block
+         <span className="ml-1 inline-block h-3 w-1 animate-pulse bg-accent-01-light dark:bg-accent-01-dark rounded-full" />
+         // Alternative: <span className="ml-1 text-xs italic text-light-secondary dark:text-dark-secondary">...</span>
       )}
     </div>
   );

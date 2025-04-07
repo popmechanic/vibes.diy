@@ -75,7 +75,7 @@ function SessionSidebar({ isVisible, onClose }: SessionSidebarProps) {
       return (
         <li
           key={session._id}
-          className="cursor-pointer border-b border-gray-200 p-3 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
+          className="cursor-pointer border-b border-light-decorative-00/50 p-3 transition-colors duration-150 hover:bg-light-decorative-01/50 dark:border-dark-decorative-00/50 dark:hover:bg-dark-decorative-01/50"
         >
           <a
             href={`/chat/${session._id}/${encodedTitle}`}
@@ -83,17 +83,17 @@ function SessionSidebar({ isVisible, onClose }: SessionSidebarProps) {
             onClick={() => onClose()}
           >
             <div className="flex items-center justify-between">
-              <div className="text-sm font-semibold text-gray-900 dark:text-white">{title}</div>
+              <div className="text-sm font-medium text-light-primary dark:text-dark-primary">{title}</div>
               <button
                 onClick={(e) => toggleFavorite(session, e)}
-                className="ml-2 text-gray-400 hover:text-yellow-500 focus:outline-none"
+                className={`ml-2 focus:outline-none ${session.favorite ? 'text-pastel-pink dark:text-accent-glow-dark' : 'text-light-secondary/40 dark:text-dark-secondary/40'} hover:text-pastel-pink dark:hover:text-accent-glow-dark`}
                 aria-label={session.favorite ? 'Remove from favorites' : 'Add to favorites'}
               >
-                <StarIcon filled={session.favorite} />
+                <StarIcon filled={session.favorite} className="h-4 w-4" /> {/* Slightly smaller star */}
               </button>
             </div>
-            <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              {new Date(session.created_at).toLocaleString()}
+            <div className="mt-1 text-xs text-light-secondary dark:text-dark-secondary">
+              {new Date(session.created_at).toLocaleDateString()} {/* Date only for brevity */}
             </div>
             {shownScreenshots.map(
               (screenshot) =>
@@ -116,14 +116,17 @@ function SessionSidebar({ isVisible, onClose }: SessionSidebarProps) {
   return (
     <div
       ref={sidebarRef}
-      className={`bg-light-background-00 dark:bg-dark-background-00 fixed top-0 left-0 z-10 h-full shadow-lg transition-all duration-300 ${
-        isVisible ? 'w-64 translate-x-0' : 'w-0 -translate-x-full'
+      className={`bg-light-background-00 dark:bg-dark-background-00 fixed top-0 left-0 z-30 h-full shadow-xl transition-transform duration-300 ease-in-out ${
+        isVisible ? 'w-64 translate-x-0' : 'w-64 -translate-x-full' // Keep width consistent for smoother animation
       }`}
+      style={{ borderRight: '1px solid var(--color-light-decorative-00)', }} // Subtle border
+      // Add dark mode border style if needed via inline style or dedicated class
     >
-      <div className="flex h-full flex-col overflow-scroll">
-        <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-gray-700">
+      <div className="flex h-full flex-col overflow-y-auto"> {/* Changed to overflow-y-auto */}
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-light-decorative-00 p-4 dark:border-dark-decorative-00">
           <h2
-            className="text-light-primary dark:text-dark-primary cursor-pointer text-lg font-semibold"
+            className="text-light-primary dark:text-dark-primary cursor-pointer text-base font-semibold tracking-wide" // Adjusted size/tracking
             onClick={() => {
               const now = Date.now();
               const timeSinceLastTap = now - lastTapRef.current;
@@ -160,13 +163,13 @@ function SessionSidebar({ isVisible, onClose }: SessionSidebarProps) {
             >
               <StarIcon
                 filled={justFavorites}
-                className={`h-5 w-5 transition-colors duration-300 ${justFavorites ? 'text-yellow-500' : 'text-gray-400'} hover:text-yellow-400`}
+                className={`h-5 w-5 transition-colors duration-300 ${justFavorites ? 'text-pastel-pink dark:text-accent-glow-dark' : 'text-light-secondary/50 dark:text-dark-secondary/50'} hover:text-pastel-pink dark:hover:text-accent-glow-dark`}
               />
             </button>
             <a
               href="/settings"
               onClick={() => onClose()}
-              className="text-gray-400 hover:text-gray-500 focus:outline-none"
+              className="text-light-secondary/50 hover:text-light-secondary dark:text-dark-secondary/50 dark:hover:text-dark-secondary focus:outline-none"
               title="Settings"
               aria-label="Settings"
             >
@@ -175,7 +178,7 @@ function SessionSidebar({ isVisible, onClose }: SessionSidebarProps) {
             <button
               type="button"
               onClick={onClose}
-              className="text-light-primary dark:text-dark-primary hover:text-accent-02-light dark:hover:text-accent-02-dark"
+              className="text-light-secondary/50 hover:text-light-secondary dark:text-dark-secondary/50 dark:hover:text-dark-secondary"
               aria-label="Close sidebar"
             >
               <svg
@@ -197,13 +200,14 @@ function SessionSidebar({ isVisible, onClose }: SessionSidebarProps) {
           </div>
         </div>
 
-        <div className="flex-grow overflow-y-auto p-2">
+        {/* Session List */}
+        <div className="flex-grow p-0"> {/* Removed padding */}
           {groupedSessions.length === 0 ? (
-            <p className="text-light-secondary dark:text-dark-secondary p-2 text-sm">
-              No saved sessions yet
+            <p className="text-light-secondary dark:text-dark-secondary p-4 text-center text-sm italic">
+              {justFavorites ? 'No favorites yet' : 'No vibes saved yet'}
             </p>
           ) : (
-            <ul className="space-y-2">{renderSessionItems()}</ul>
+            <ul className="space-y-0">{renderSessionItems()}</ul> /* Removed space-y */
           )}
         </div>
       </div>

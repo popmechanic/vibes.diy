@@ -30,32 +30,29 @@ const AIMessage = memo(
     const { segments } = parseContent(message.text);
     return (
       <div className="mb-4 flex flex-row justify-start px-4">
-        <div className="mr-2 flex-shrink-0">
-          <div className="bg-accent-02-light dark:bg-accent-02-dark flex h-8 w-8 items-center justify-center rounded-full shadow-sm">
+        <div className="mr-3 flex-shrink-0">
+          {/* AI Icon container with subtle gradient */}
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-accent-02-light to-pastel-lavender dark:from-accent-02-dark dark:to-purple-700 subtle-shadow">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-white"
+              className="h-5 w-5 text-white dark:text-dark-primary/80"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
               aria-hidden="true"
             >
+              {/* Simplified icon or keep existing */}
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"
+                d="M9.75 17.25c0 2.625 2.625 2.625 5.25 0m-5.25-10.5c0 2.625 2.625 2.625 5.25 0m-5.25 5.25h5.25" // Abstract lines
               />
             </svg>
           </div>
         </div>
-        <div className="max-w-[85%] rounded-2xl bg-white px-5 py-3 text-gray-900 shadow-md dark:bg-gray-800 dark:text-gray-100">
+        {/* Message bubble */}
+        <div className="max-w-[85%] rounded-lg rounded-tl-none bg-light-background-01 px-4 py-3 text-light-primary subtle-shadow dark:bg-dark-background-01 dark:text-dark-primary">
           <StructuredMessage
             segments={segments || []}
             isStreaming={isStreaming}
@@ -90,8 +87,10 @@ const AIMessage = memo(
 const UserMessage = memo(({ message }: { message: ChatMessageDocument }) => {
   return (
     <div className="mb-4 flex flex-row justify-end px-4">
-      <div className="max-w-[85%] rounded-2xl bg-gray-300 px-5 py-3 text-gray-800 shadow-md dark:bg-gray-700 dark:text-gray-100">
-        <div className="prose prose-sm dark:prose-invert prose-ul:pl-5 prose-ul:list-disc prose-ol:pl-5 prose-ol:list-decimal prose-li:my-0 max-w-none">
+      {/* User message bubble */}
+      <div className="max-w-[85%] rounded-lg rounded-br-none bg-accent-02-light px-4 py-3 text-white subtle-shadow dark:bg-accent-02-dark dark:text-dark-primary">
+        {/* Use ai-markdown for consistency, though prose might be fine */}
+        <div className="ai-markdown prose-sm dark:prose-invert max-w-none text-white dark:text-dark-primary">
           <ReactMarkdown>{message.text}</ReactMarkdown>
         </div>
       </div>
@@ -110,7 +109,14 @@ const Message = memo(
   }: MessageProps) => {
     return (
       <div className="transition-all duration-150 ease-in hover:opacity-95">
-        {message.type === 'ai' ? (
+            setMobilePreviewShown,
+          }: MessageProps) => {
+            // Removed hover effect from wrapper, apply to individual bubbles if needed
+            return (
+              <div className="transition-opacity duration-150 ease-in">
+                {message.type === 'ai' ? (
+                  <AIMessage
+                    message={message as AiChatMessageDocument}
           <AIMessage
             message={message as AiChatMessageDocument}
             isStreaming={isStreaming}
